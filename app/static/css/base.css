@@ -1,0 +1,45 @@
+* {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI";
+}
+
+.nav-menu {
+    height: 60px;
+    display: flex;
+    list-style: none;
+    align-items: center;
+    gap: 6  px;
+    background-color: rgb(246, 248, 250);
+    border-bottom: 1px solid rgb(209, 217, 224);
+}
+
+.nav-menu svg {
+    fill: rgb(89, 99, 110);
+}
+
+.nav-item a {
+    height: 60px; 
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 6px;
+    
+    font-size: 15px;
+    text-decoration: none;
+    color: rgb(31, 35, 40);
+    padding: 0 12px;
+}
+
+.nav-item-active a {
+    color: rgb(31, 35, 40);
+    font-weight: 700;
+    border-bottom: 2px solid rgb(253, 140, 115);
+}
+
+main {
+    display: flex;
+    flex-direction: column;
+    padding: 20px 16px;
+}

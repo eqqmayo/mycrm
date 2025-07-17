@@ -1,0 +1,16 @@
+{% extends 'layouts/base.html' %}
+{% from 'components/table.html' import table, load_component_styles %}
+
+{% block styles %}
+{{ load_component_styles() }}
+{% endblock %}
+
+{% block content %}
+    {{ table('Store Info', store) }}
+    {% if month %}
+        {{ table('Daily', day_rev) }}
+        {{ table('Regular', regular, 1, 'user.user') }}
+    {% else %}
+        {{ table('Monthly', month_rev, 1, 'store.store_detail', '?month=') }}
+    {% endif %}
+{% endblock %}

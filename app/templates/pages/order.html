@@ -1,0 +1,10 @@
+{% extends 'layouts/base.html' %}
+{% from 'components/table.html' import table, load_component_styles %}
+
+{% block styles %}
+{{ load_component_styles() }}
+{% endblock %}
+
+{% block content %}
+    {{ table(orders, 1, 'orderitem.orderitem_detail') }}
+{% endblock %}
