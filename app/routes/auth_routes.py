@@ -6,7 +6,7 @@ auth_bp = Blueprint('auth', __name__)
 def login():
     if request.method == 'POST':
         if request.form['username'] == 'sesac' and request.form['password'] == 'sesac':
-            return redirect(url_for('order.order'))
+            return redirect(url_for('user.user'))
         return render_template('pages/auth/login.html', success=False)
         
     return render_template('pages/auth/login.html', success=True)

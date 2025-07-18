@@ -34,7 +34,7 @@
 
 .nav-item-active a {
     color: rgb(31, 35, 40);
-    font-weight: 700;
+    font-weight: 600;
     border-bottom: 2px solid rgb(253, 140, 115);
 }
 

@@ -2,14 +2,16 @@
 {% from 'components/table.html' import load_component_styles %}
 
 {% block styles %}
-{{ load_component_styles() }}
+{{ load_component_styles() }}   
+<link rel="stylesheet" href="{{ url_for('static', filename='css/user.css') }}">
 {% endblock %}
 
 {% block content %}
     <main>
         <div class="user-table-container"></div>
         <div class="order-table-container"></div>
-        <div class="go-to-container"></div>
+        <div class="goto-stores-container"></div>
+        <div class="goto-items-container"></div>
     </main>
     
     <script src="/static/js/components/table.js"></script>
@@ -17,7 +19,7 @@
         const id = window.location.pathname.split('/')[3];
 
         async function fetchUser() {
-            await fetch(`/api/users/userinfo/${id}`)
+            await fetch(`/api/users/user/${id}`)
                 .then(response => response.json())
                 .then(user => {
                         const userData = {
@@ -32,7 +34,7 @@
         }
 
         async function fetchOrder() {
-            await fetch(`/api/users/orderinfo/${id}`)
+            await fetch(`/api/users/orders/${id}`)
                 .then(response => response.json())
                 .then(orders => {
                         const orderData = {
@@ -48,8 +50,37 @@
                         document.querySelector('.order-table-container').innerHTML = table.render();
                     })
         }
+
         
+        async function fetchGoto() {
+            await fetch(`/api/users/goto-stores/${id}`)
+                .then(response => response.json())
+                .then(stores => {
+                        const storeData = {
+                            keys: ['Store', 'Count'],
+                            items: [{'Store': '스타벅스 2호점', 'Count': 3}]
+                        };
+
+                        const table = new Table('자주 방문한 매장 Top 5', storeData);
+                        document.querySelector('.goto-stores-container').innerHTML = table.render();
+                    })
+
+            await fetch(`/api/users/goto-items/${id}`)
+                .then(response => response.json())
+                .then(items => {
+                        const itemData = {
+                            keys: ['Item', 'Count'],
+                            items: [{'Item': '스타벅스 2호점', 'Count': 3}]
+                        };
+
+                        const table = new Table('자주 주문한 메뉴 Top 5', storeData);
+                        document.querySelector('.goto-items-container').innerHTML = table.render();
+                    })
+        }    
+
         fetchUser();
-        fetchOrder()
+        fetchOrder();
+        fetchGoto();
+
     </script>
 {% endblock %}

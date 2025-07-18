@@ -25,7 +25,7 @@ def get_users():
         'Birthdate': user.birthdate,
     } for user in users])
 
-@user_api_bp.route('/userinfo/<string:id>')
+@user_api_bp.route('/user/<string:id>')
 def get_user_by_id(id):
     user = User.query.filter_by(id=id).one()
     return jsonify([{
@@ -36,7 +36,7 @@ def get_user_by_id(id):
         'Address': user.address
     }])
 
-@user_api_bp.route('/orderinfo/<string:id>')
+@user_api_bp.route('/orders/<string:id>')
 def get_orders_by_id(id):
     user = User.query.filter_by(id=id).one()
     return jsonify([{
@@ -44,3 +44,11 @@ def get_orders_by_id(id):
         'OrderAt': order.orderat,
         'StoreId': order.storeid,
     } for order in user.orders])
+
+@user_api_bp.route('/goto-stores/<string:id>')
+def get_goto_stores_by_id(id):
+    user = User.query.filter_by(id=id).one()
+    return jsonify([{
+        'Store': store.name,
+        'Count': store.orderat,
+    } for store in user.orders.stores])
