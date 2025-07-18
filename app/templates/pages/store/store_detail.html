@@ -6,6 +6,7 @@
 {% endblock %}
 
 {% block content %}
+<main>
     {{ table('Store Info', store) }}
     {% if month %}
         {{ table('Daily Revenue', day_rev) }}
@@ -14,4 +15,5 @@
         {{ table('Monthly Revenue', month_rev, 1, 'store.store_detail', '?month=') }}
         {{ table('Regular Customer', regular, 1, 'user.user') }}
     {% endif %}
+</main>
 {% endblock %}

@@ -6,18 +6,19 @@
 {% endblock %}
 
 {% block content %}
+<main>
     {{ table('Item Info', item) }}
     {{ table('Monthly Revenue', month_rev) }}
 
-<div>
-    <br><canvas id="revChart"></canvas><br>
-</div>
-
+    <div>
+        <br><canvas id="revChart"></canvas><br>
+    </div>
+</main>
 <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 
 <script>
     const ctx = document.getElementById('revChart');
-    const datalist = {{ month_rev|tojson|safe }}['items'];
+    // const datalist = {{ month_rev|tojson|safe }}['items'];
 
     new Chart(ctx, {
         type: 'line',
