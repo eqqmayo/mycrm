@@ -9,7 +9,7 @@ def order():
     limit = 12
     last_page = db.get_orders_count()
     orders = db.get_orders_per_page(page, limit)
-    return render_template('pages/order.html', 
+    return render_template('pages/order/order.html', 
                             orders=orders,
                             last_page=last_page,
                             current_page=page,
@@ -18,4 +18,4 @@ def order():
 @order_bp.route('/detail/<string:id>')
 def order_detail(id):
     order = db.get_order_by_id(id)
-    return render_template('pages/order_detail.html', order=order)
+    return render_template('pages/order/order_detail.html', order=order)

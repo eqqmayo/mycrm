@@ -9,7 +9,7 @@ def store():
     limit = 12
     last_page = db.get_stores_count()
     stores = db.get_stores_per_page(page, limit)
-    return render_template('pages/store.html', 
+    return render_template('pages/store/store.html', 
                             stores=stores,
                             last_page=last_page,
                             current_page=page,
@@ -23,7 +23,7 @@ def store_detail(id):
     if month:
         rev = db.get_day_rev_by_storeid(id, month)
         regular = db.get_month_regular_by_id(id, month)
-        return render_template('pages/store_detail.html', 
+        return render_template('pages/store/store_detail.html', 
                                 store=store, 
                                 day_rev=rev,
                                 month_regular=regular,
@@ -31,7 +31,7 @@ def store_detail(id):
                                 )
     rev = db.get_month_rev_by_storeid(id)
     regular = db.get_regular_by_id(id)
-    return render_template('pages/store_detail.html', 
+    return render_template('pages/store/store_detail.html', 
                                 store=store, 
                                 month_rev=rev,
                                 regular=regular,

@@ -1,0 +1,89 @@
+{% extends 'layouts/base.html' %}
+{% from 'components/table.html' import table, load_component_styles %}
+
+{% block styles %}
+{{ load_component_styles() }}
+{% endblock %}
+
+{% block content %}
+    {{ table('Item Info', item) }}
+    {{ table('Monthly Revenue', month_rev) }}
+
+<div>
+    <br><canvas id="revChart"></canvas><br>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+<script>
+    const ctx = document.getElementById('revChart');
+    const datalist = {{ month_rev|tojson|safe }}['items'];
+
+    new Chart(ctx, {
+        type: 'line',
+        data: {
+            datasets: [{
+                label: 'Item Count',
+                data: datalist.map(data => data['Item Count']),
+                borderColor: 'rgb(89, 99, 110)',
+                backgroundColor: 'rgb(89, 99, 110)',
+                borderWidth: 2, 
+                yAxisID: 'y2',  
+                order: 1
+            }, {
+                label: 'Total Revenue',
+                data: datalist.map(data => data['Total Revenue']),
+                type: 'bar',
+                backgroundColor: 'rgb(253, 140, 115)',
+                yAxisID: 'y1',  
+                order: 2
+            }],
+            labels: datalist.map(data => data.Month)
+        },
+        options: {
+            scales: {
+                x: {
+                    grid: {
+                        display: false 
+                    },
+                    ticks: {
+                        color: 'rgb(0, 0, 0)'
+                    }
+                },
+                y1: {
+                    type: 'linear',
+                    display: true,
+                    position: 'left',
+                    title: {
+                        display: false
+                    },
+                    ticks: {
+                        color: 'rgb(0, 0, 0)' 
+                    }
+                },
+                y2: {
+                    type: 'linear',
+                    display: true,
+                    position: 'right',
+                    title: {
+                        display: false
+                    },
+                    grid: {
+                        drawOnChartArea: false
+                    },
+                    ticks: {
+                        color: 'rgb(0, 0, 0)' 
+                    }
+                }
+            },
+            plugins: {
+                legend: {
+                    labels: {
+                        color: 'rgb(0, 0, 0)' 
+                    }
+                }
+            }
+        }
+    });
+</script>
+{% endblock %}

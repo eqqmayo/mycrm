@@ -7,6 +7,6 @@ def login():
     if request.method == 'POST':
         if request.form['username'] == 'sesac' and request.form['password'] == 'sesac':
             return redirect(url_for('order.order'))
-        return render_template('pages/login.html', success=False)
+        return render_template('pages/auth/login.html', success=False)
         
-    return render_template('pages/login.html', success=True)
+    return render_template('pages/auth/login.html', success=True)
