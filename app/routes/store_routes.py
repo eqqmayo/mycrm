@@ -21,17 +21,19 @@ def store_detail(id):
     store = db.get_store_by_id(id)
 
     if month:
-        rev = db.get_day_rev_by_id(id, month)
+        rev = db.get_day_rev_by_storeid(id, month)
         regular = db.get_month_regular_by_id(id, month)
         return render_template('pages/store_detail.html', 
                                 store=store, 
                                 day_rev=rev,
-                                regular=regular,
+                                month_regular=regular,
                                 month=month,
                                 )
-    rev = db.get_month_rev_by_id(id)
+    rev = db.get_month_rev_by_storeid(id)
+    regular = db.get_regular_by_id(id)
     return render_template('pages/store_detail.html', 
                                 store=store, 
                                 month_rev=rev,
+                                regular=regular,
                                 month=month,
                                 )

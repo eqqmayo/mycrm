@@ -8,9 +8,10 @@
 {% block content %}
     {{ table('Store Info', store) }}
     {% if month %}
-        {{ table('Daily', day_rev) }}
-        {{ table('Regular', regular, 1, 'user.user') }}
+        {{ table('Daily Revenue', day_rev) }}
+        {{ table('Regular Customer', month_regular, 1, 'user.user') }}
     {% else %}
-        {{ table('Monthly', month_rev, 1, 'store.store_detail', '?month=') }}
+        {{ table('Monthly Revenue', month_rev, 1, 'store.store_detail', '?month=') }}
+        {{ table('Regular Customer', regular, 1, 'user.user') }}
     {% endif %}
 {% endblock %}

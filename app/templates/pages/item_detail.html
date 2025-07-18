@@ -6,5 +6,6 @@
 {% endblock %}
 
 {% block content %}
-    {{ table('Oreder Item', orderitems, 2, 'order.order_detail', '', 3, 'item.item_detail') }}
+    {{ table('Item Info', item) }}
+    {{ table('Monthly Revenue', month_rev) }}
 {% endblock %}

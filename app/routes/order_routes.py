@@ -15,7 +15,7 @@ def order():
                             current_page=page,
                             )
 
-@order_bp.route('/detail')
-def order_detail():
-    
-    return render_template('pages/user.html')
+@order_bp.route('/detail/<string:id>')
+def order_detail(id):
+    order = db.get_order_by_id(id)
+    return render_template('pages/order_detail.html', order=order)

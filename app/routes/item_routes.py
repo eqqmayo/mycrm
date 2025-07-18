@@ -15,7 +15,8 @@ def item():
                             current_page=page,
                             )
 
-@item_bp.route('/detail')
-def item_detail():
-    
-    return render_template('pages/user.html')
+@item_bp.route('/detail/<string:id>')
+def item_detail(id):
+    item = db.get_item_by_id(id)
+    rev = db.get_month_rev_by_itemid(id)
+    return render_template('pages/item_detail.html', item=item, month_rev=rev)
