@@ -58,7 +58,7 @@
                 .then(stores => {
                         const storeData = {
                             keys: ['Store', 'Count'],
-                            items: [{'Store': '스타벅스 2호점', 'Count': 3}]
+                            items: stores
                         };
 
                         const table = new Table('자주 방문한 매장 Top 5', storeData);
@@ -70,10 +70,10 @@
                 .then(items => {
                         const itemData = {
                             keys: ['Item', 'Count'],
-                            items: [{'Item': '스타벅스 2호점', 'Count': 3}]
+                            items: items
                         };
 
-                        const table = new Table('자주 주문한 메뉴 Top 5', storeData);
+                        const table = new Table('자주 주문한 메뉴 Top 5', itemData);
                         document.querySelector('.goto-items-container').innerHTML = table.render();
                     })
         }    

@@ -6,6 +6,8 @@ class OrderItem(db.Model):
     id = db.Column('Id', db.String, primary_key=True)
     orderid = db.Column('OrderId', db.String, db.ForeignKey('orders.Id'))
     itemid = db.Column('ItemId', db.String, db.ForeignKey('items.Id'))
+    
+    item = db.relationship('Item', backref='order_items', lazy=True)
 
     def __init__(self, id, orderid, itemid):
         self.id = id
