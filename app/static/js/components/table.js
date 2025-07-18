@@ -1,5 +1,5 @@
 class Table {
-    constructor(title, data, options = {}) {
+    constructor(title, data, options = {linkColumn: []}) {
         this.title = title;
         this.data = data;
         this.options = options;
@@ -17,8 +17,11 @@ class Table {
                 ${this.data.items.map(item => `
                     <tr>
                         ${this.data.keys.map(key => {
-                            if (this.options.linkColumn === key) {
-                                return `<td><a href="${this.options.baseUrl}/${item[key]}">${item[key]}</a></td>`;
+                            if (this.options.linkColumn && this.options.linkColumn.includes(key)) {
+                                const index = this.options.linkColumn.indexOf(key);
+                                const url = this.options.baseUrl[index];
+                                return `<td><a href="${url}/${item[key]}">
+                                        ${item[key]}</a></td>`;
                             }
                             return `<td>${item[key]}</td>`;
                         }).join('')}
@@ -28,10 +31,3 @@ class Table {
         `;
     }
 }
-
-// 사용 예시:
-const table = new Table('Monthly Revenue', monthRev, {
-    linkColumn: 'Month',
-    baseUrl: '/stores/detail'
-});
-document.querySelector('#tableContainer').innerHTML = table.render();

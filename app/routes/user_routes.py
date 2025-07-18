@@ -1,13 +1,46 @@
-from flask import Blueprint, render_template
+from flask import Blueprint, render_template, jsonify
+from models.user import User
 
 user_bp = Blueprint('user', __name__)
 user_api_bp = Blueprint('user_api', __name__)
 
+# ------------------------------------------------------
 @user_bp.route('/')
 def user():
     return render_template('pages/user/user.html')
 
+@user_bp.route('/detail/<string:id>')
+def user_detail(id):
+    return render_template('pages/user/user_detail.html')
+
+# -------------------------------------------------------
 @user_api_bp.route('/')
 def get_users():
-    users = User.query.all()
-    return jsonify([user.to_dict() for user in users])
+    users = User.query.limit(12).all()
+    return jsonify([{
+        'Id': user.id,
+        'Name': user.name,
+        'Gender': user.gender,
+        'Age': user.age,
+        'Birthdate': user.birthdate,
+    } for user in users])
+
+@user_api_bp.route('/userinfo/<string:id>')
+def get_user_by_id(id):
+    user = User.query.filter_by(id=id).one()
+    return jsonify([{
+        'Name': user.name,
+        'Gender': user.gender,
+        'Age': user.age,
+        'Birthdate': user.birthdate,
+        'Address': user.address
+    }])
+
+@user_api_bp.route('/orderinfo/<string:id>')
+def get_orders_by_id(id):
+    user = User.query.filter_by(id=id).one()
+    return jsonify([{
+        'OrderId': order.id,
+        'OrderAt': order.orderat,
+        'StoreId': order.storeid,
+    } for order in user.orders])

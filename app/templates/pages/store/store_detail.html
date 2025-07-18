@@ -10,10 +10,10 @@
     {{ table('Store Info', store) }}
     {% if month %}
         {{ table('Daily Revenue', day_rev) }}
-        {{ table('Regular Customer', month_regular, 1, 'user.user') }}
+        {{ table('Regular Customer', month_regular, 1, 'user.user_detail') }}
     {% else %}
         {{ table('Monthly Revenue', month_rev, 1, 'store.store_detail', '?month=') }}
-        {{ table('Regular Customer', regular, 1, 'user.user') }}
+        {{ table('Regular Customer', regular, 1, 'user.user_detail') }}
     {% endif %}
 </main>
 {% endblock %}
