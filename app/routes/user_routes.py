@@ -1,6 +1,7 @@
 from flask import Blueprint, render_template, jsonify
 from models.user import User
 from collections import Counter
+from math import ceil
 
 
 user_bp = Blueprint('user', __name__)
@@ -17,15 +18,33 @@ def user_detail(id):
 
 # -------------------------------------------------------
 @user_api_bp.route('/')
-def get_users():
-    users = User.query.limit(12).all()
-    return jsonify([{
-        'Id': user.id,
-        'Name': user.name,
-        'Gender': user.gender,
-        'Age': user.age,
-        'Birthdate': user.birthdate,
-    } for user in users])
+@user_api_bp.route('/<int:page>')
+def get_users(page=1):
+    limit = 12
+    offset = (page - 1) * limit
+    
+    users = User.query.offset(offset).limit(limit).all()
+    
+    last_page = ceil(User.query.count() / limit)
+
+    start = (ceil(page / 10) - 1) * 10 + 1
+    end = min(ceil(page / 10) * 10, last_page)
+
+    return jsonify({
+        'users':[{
+            'Id': user.id,
+            'Name': user.name,
+            'Gender': user.gender,
+            'Age': user.age,
+            'Birthdate': user.birthdate,
+        } for user in users],
+        'pagination':{
+            'current_page': page,
+            'last_page': last_page,
+            'start': start,
+            'end': end,
+        }
+    })
 
 @user_api_bp.route('/user/<string:id>')
 def get_user_by_id(id):

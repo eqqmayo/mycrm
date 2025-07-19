@@ -15,7 +15,6 @@ def store(page=1):
 
     stores = db.get_stores_per_page(page, limit)
 
-    print('*******************', page)
     return render_template('pages/store/store.html', 
                             stores=stores,
                             last_page=last_page,

@@ -6,7 +6,7 @@
 {% endmacro %}
 
 {% macro pagination(endpoint, start, end, current_page, last_page) %}
-<ul div class="pagination">
+<ul class="pagination">
     {% if current_page != 1 %}
     <li><a href="{{ url_for(endpoint, page=current_page - 1) }}">&lt Prev</a></li>
     {% endif %}

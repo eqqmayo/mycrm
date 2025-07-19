@@ -1,24 +1,31 @@
 {% extends 'layouts/base.html' %}
 {% from 'components/table.html' import load_component_styles %}
+{% from 'components/pagination.html' import load_styles %}
 
 {% block styles %}
 {{ load_component_styles() }}
+{{ load_styles() }}
 {% endblock %}
 
 {% block content %}
     <main>
         <div class="users-table-container"></div>
+        <div class="pagination-container"></div>
     </main>
     
     <script src="/static/js/components/table.js"></script>
+    <script src="/static/js/components/pagination.js"></script>
     <script>
+
         async function fetchUsers() {
-            await fetch('/api/users')
+            const page = window.location.pathname.split('/')[2];
+
+            await fetch(`/api/users/${page}`)
                 .then(response => response.json())
-                .then(users => {
+                .then(data => {
                         const userData = {
                             keys: ['Id', 'Name', 'Gender', 'Age', 'Birthdate'],
-                            items: users
+                            items: data['users']
                         };
 
                         const table = new Table('User', userData, {
@@ -27,6 +34,11 @@
                         });
 
                         document.querySelector('.users-table-container').innerHTML = table.render();
+
+                        const pageData = data['pagination'];
+                        const pagination = new Pagination(pageData['start'], pageData['end'], pageData['current_page'], pageData['last_page'])
+                 
+                        document.querySelector('.pagination-container').innerHTML = pagination.render();
                     })
         }
 
