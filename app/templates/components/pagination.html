@@ -1,0 +1,24 @@
+{% macro load_styles() %}
+{% if not _component_styles_loaded %}
+<link rel="stylesheet" href="{{ url_for('static', filename='css/pagination.css') }}">
+{% set _component_styles_loaded = true %}
+{% endif %}
+{% endmacro %}
+
+{% macro pagination(endpoint, start, end, current_page, last_page) %}
+<ul div class="pagination">
+    {% if current_page != 1 %}
+    <li><a href="{{ url_for(endpoint, page=current_page - 1) }}">&lt Prev</a></li>
+    {% endif %}
+
+    {% for page in range(start, end + 1) %}
+    <li><a href="{{ url_for(endpoint, page=page) }}" 
+        class="{% if page == current_page %}inactive{% endif %}">{{ page }}</a></li>
+    {% endfor %}
+
+    {% if current_page != last_page %}
+    <li><a href="{{ url_for(endpoint, page=current_page + 1) }}">Next &gt</a></li>
+    {% endif %}
+</ul>
+{% endmacro %}
+

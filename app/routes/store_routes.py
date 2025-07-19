@@ -1,18 +1,27 @@
 from flask import Blueprint, render_template, request
 import database_sqlite as db
+from math import ceil
 
 store_bp = Blueprint('store', __name__)
 
 @store_bp.route('/')
-def store():
-    page = request.args.get('page', default=1, type=int)
+@store_bp.route('/<int:page>')
+def store(page=1):
     limit = 12
-    last_page = db.get_stores_count()
+    last_page = ceil(db.get_stores_count() / limit)
+
+    start = (ceil(page / 10) - 1) * 10 + 1
+    end = min(ceil(page / 10) * 10, last_page)
+
     stores = db.get_stores_per_page(page, limit)
+
+    print('*******************', page)
     return render_template('pages/store/store.html', 
                             stores=stores,
                             last_page=last_page,
                             current_page=page,
+                            start=start,
+                            end=end
                             )
 
 @store_bp.route('/detail/<string:id>')

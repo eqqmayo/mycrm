@@ -1,0 +1,13 @@
+.pagination {
+    display: flex;
+    flex-direction: row;
+    list-style: none;
+    justify-content: center;
+    margin-bottom: 12px;
+    gap: 10px;
+}
+
+.inactive {
+    color: rgb(61, 62, 62);
+}
+
