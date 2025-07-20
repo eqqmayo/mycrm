@@ -1,4 +1,4 @@
-from flask import Blueprint, render_template, jsonify
+from flask import Blueprint, render_template, jsonify, request
 from models.user import User
 from collections import Counter
 from math import ceil
@@ -22,10 +22,20 @@ def user_detail(id):
 def get_users(page=1):
     limit = 12
     offset = (page - 1) * limit
-    
-    users = User.query.offset(offset).limit(limit).all()
-    
-    last_page = ceil(User.query.count() / limit)
+
+    query = User.query
+
+    name = request.args.get('name')
+    gender = request.args.get('gender')
+
+    if name:
+        query = query.filter(User.name.like(f'%{name}%')) 
+    if gender: 
+        query = query.filter(User.gender == gender)
+
+    users = query.offset(offset).limit(limit).all()
+    total_count = query.count()  # 필터링된 전체 수
+    last_page = ceil(total_count / limit)
 
     start = (ceil(page / 10) - 1) * 10 + 1
     end = min(ceil(page / 10) * 10, last_page)

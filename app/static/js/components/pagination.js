@@ -31,7 +31,11 @@ class Pagination {
 }
 
 function changePage(page) {
-    history.pushState({}, '', `/users/${page}`);
+    // 현재 URL의 쿼리 파라미터 가져오기
+    const currentParams = window.location.search;
+    
+    // 페이지 번호는 경로에, 기존 쿼리 파라미터는 유지
+    history.pushState({}, '', `/users/${page}${currentParams}`);
     window.scrollTo(0,0);
     fetchUsers();
 }

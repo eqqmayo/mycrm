@@ -22,28 +22,40 @@
         document.querySelector('.search-container').innerHTML = renderSearch();
 
         async function fetchUsers() {
-            const page = window.location.pathname.split('/')[2];
+            let url = '/api/users';
+            
+            if (window.location.search) {
+                url += window.location.pathname.split('/users')[1] 
+                        + window.location.search; 
+            }   
+            else if (window.location.pathname.split('/')[2]) {
+                url += '/' + window.location.pathname.split('/')[2];
+            }
 
-            await fetch(`/api/users/${page}`)
-                .then(response => response.json())
-                .then(data => {
-                        const userData = {
-                            keys: ['Id', 'Name', 'Gender', 'Age', 'Birthdate'],
-                            items: data['users']
-                        };
+            const response = await fetch(url);
+            const data = await response.json();
+            
+            const userData = {
+                keys: ['Id', 'Name', 'Gender', 'Age', 'Birthdate'],
+                items: data['users']
+            };
 
-                        const table = new Table('User', userData, {
-                            linkColumn: ['Id'],
-                            baseUrl: ['/users/detail']
-                        });
+            const table = new Table('User', userData, {
+                linkColumn: ['Id'],
+                baseUrl: ['/users/detail']
+            });
 
-                        document.querySelector('.users-table-container').innerHTML = table.render();
+            document.querySelector('.users-table-container').innerHTML = table.render();
 
-                        const pageData = data['pagination'];
-                        const pagination = new Pagination(pageData['start'], pageData['end'], pageData['current_page'], pageData['last_page'])
-                 
-                        document.querySelector('.pagination-container').innerHTML = pagination.render();
-                    })
+            const pageData = data['pagination'];
+            const pagination = new Pagination(
+                pageData['start'], 
+                pageData['end'], 
+                pageData['current_page'], 
+                pageData['last_page']
+            );
+
+            document.querySelector('.pagination-container').innerHTML = pagination.render();
         }
 
         fetchUsers();
