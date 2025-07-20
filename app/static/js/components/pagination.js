@@ -32,5 +32,6 @@ class Pagination {
 
 function changePage(page) {
     history.pushState({}, '', `/users/${page}`);
+    window.scrollTo(0,0);
     fetchUsers();
 }

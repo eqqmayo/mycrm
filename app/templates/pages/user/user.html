@@ -5,17 +5,21 @@
 {% block styles %}
 {{ load_component_styles() }}
 {{ load_styles() }}
+<link rel="stylesheet" href="{{ url_for('static', filename='css/search.css') }}">
 {% endblock %}
 
 {% block content %}
     <main>
+        <div class="search-container"></div>
         <div class="users-table-container"></div>
         <div class="pagination-container"></div>
     </main>
     
     <script src="/static/js/components/table.js"></script>
     <script src="/static/js/components/pagination.js"></script>
+    <script src="/static/js/components/search.js"></script>
     <script>
+        document.querySelector('.search-container').innerHTML = renderSearch();
 
         async function fetchUsers() {
             const page = window.location.pathname.split('/')[2];
