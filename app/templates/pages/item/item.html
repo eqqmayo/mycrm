@@ -1,15 +1,19 @@
 {% extends 'layouts/base.html' %}
-{% from 'components/table.html' import table, load_component_styles %}
-{% from 'components/pagination.html' import pagination,load_styles %}
+{% from 'components/table.html' import table, load_table_styles %}
+{% from 'components/pagination.html' import pagination, load_pagination_styles %}
 
 {% block styles %}
-{{ load_component_styles() }}
-{{ load_styles() }}
+{{ load_table_styles() }}
+{{ load_pagination_styles() }}
 {% endblock %}
 
 {% block content %}
 <main>
-    {{ table('Item', items, 1, 'item.item_detail') }}
+    {{ table(
+        title='Item', 
+        data=items, 
+        i=1, i_endpoint='item.item_detail') }}
+
     {{ pagination('item.item', start, end, current_page, last_page) }}
 </main>
 {% endblock %}

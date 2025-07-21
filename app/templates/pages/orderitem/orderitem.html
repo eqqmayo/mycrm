@@ -1,15 +1,20 @@
 {% extends 'layouts/base.html' %}
-{% from 'components/table.html' import table, load_component_styles %}
-{% from 'components/pagination.html' import pagination,load_styles %}
+{% from 'components/table.html' import table, load_table_styles %}
+{% from 'components/pagination.html' import pagination, load_pagination_styles %}
 
 {% block styles %}
-{{ load_component_styles() }}
-{{ load_styles() }}
+{{ load_table_styles() }}
+{{ load_pagination_styles() }}
 {% endblock %}
 
 {% block content %}
 <main>
-    {{ table('Oreder Item', orderitems, 2, 'order.order_detail', '', 3, 'item.item_detail') }}
+    {{ table(
+        title='Oreder Item', 
+        data=orderitems,
+        i=2, i_endpoint='order.order_detail', i_query='', 
+        j=3, j_endpoint='item.item_detail') }}
+        
     {{ pagination('orderitem.orderitem', start, end, current_page, last_page) }}
 </main>
 {% endblock %}

@@ -1,11 +1,12 @@
-{% macro load_component_styles() %}
-{% if not _component_styles_loaded %}
+{% macro load_table_styles() %}
 <link rel="stylesheet" href="{{ url_for('static', filename='css/table.css') }}">
-{% set _component_styles_loaded = true %}
-{% endif %}
 {% endmacro %}
 
-{% macro table(title, data, i=None, i_endpoint=None, i_query='', j=None, j_endpoint=None, j_query='') %}
+{% macro table(
+    title, 
+    data, 
+    i=None, i_endpoint=None, i_query='', 
+    j=None, j_endpoint=None, j_query='') %}
 <p>&nbsp;{{ title }}</p>
 <table>
     <tr>
@@ -18,13 +19,13 @@
         {% for key in data['keys'] %}
             {% if i and key == data['keys'][i-1] %}
                 {% if i_query %}
-                    <td><a href="{{ request.path + i_query + item[key] }}">{{ item[key] }}</a></td>
+                    <td><a href="{{ request.path + '?' + i_query + '=' + item[key] }}">{{ item[key] }}</a></td>
                 {% else %}
                     <td><a href="{{ url_for(i_endpoint, id=item[key]) }}">{{ item[key] }}</a></td>
                 {% endif %}
             {% elif j and key == data['keys'][j-1] %}
                 {% if j_query %}
-                    <td><a href="{{ request.path + j_query + item[key]}}">{{ item[key] }}</a></td>
+                    <td><a href="{{ request.path + '?' + j_query + '=' + item[key] }}">{{ item[key] }}</a></td>
                 {% else %}
                     <td><a href="{{ url_for(j_endpoint, id=item[key]) }}">{{ item[key] }}</a></td>
                 {% endif %}

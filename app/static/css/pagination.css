@@ -1,8 +1,8 @@
 .pagination {
     display: flex;
     flex-direction: row;
-    list-style: none;
     justify-content: center;
+    list-style: none;
     margin-bottom: 12px;
     gap: 12px;
 }

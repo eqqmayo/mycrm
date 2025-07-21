@@ -1,19 +1,30 @@
 {% extends 'layouts/base.html' %}
-{% from 'components/table.html' import table, load_component_styles %}
+{% from 'components/table.html' import table, load_table_styles %}
 
 {% block styles %}
-{{ load_component_styles() }}
+{{ load_table_styles() }}
 {% endblock %}
 
 {% block content %}
 <main>
     {{ table('Store Info', store) }}
     {% if month %}
-        {{ table('Daily Revenue', day_rev) }}
-        {{ table('Regular Customer', month_regular, 1, 'user.user_detail') }}
+        {{ table(
+            title='Daily Revenue', 
+            data=day_rev) }}
+        {{ table(
+            title='Regular Customer', 
+            data=month_regular, 
+            i=1, i_endpoint='user.user_detail') }}
     {% else %}
-        {{ table('Monthly Revenue', month_rev, 1, 'store.store_detail', '?month=') }}
-        {{ table('Regular Customer', regular, 1, 'user.user_detail') }}
+        {{ table(
+            title='Monthly Revenue', 
+            data=month_rev, 
+            i=1, i_endpoint='store.store_detail', i_query='month') }}
+        {{ table(
+            title='Regular Customer', 
+            data=regular, 
+            i=1, i_endpoint='user.user_detail') }}
     {% endif %}
 </main>
 {% endblock %}

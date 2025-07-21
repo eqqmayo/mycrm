@@ -1,5 +1,5 @@
 from flask import Blueprint, render_template, request
-import database_sqlite as db
+from ..database import database_sqlite as db
 from math import ceil
 
 store_bp = Blueprint('store', __name__)

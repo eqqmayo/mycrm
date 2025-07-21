@@ -1,4 +1,4 @@
-from models.user import db
+from database.database_orm import db
 
 class Item(db.Model):
     __tablename__ = 'items'

@@ -1,6 +1,6 @@
-{% macro nav_item(endpoint, label, icon) %}
-    <li class="nav-item {% if request.endpoint.split('.')[0] == endpoint %}nav-item-active{% endif %}">
-        <a href="{{ url_for(endpoint + '.' + endpoint) }}">
+{% macro nav_item(item, label, icon) %}
+    <li class="nav-item {% if request.endpoint.split('.')[0] == item %}nav-item-active{% endif %}">
+        <a href="{{ url_for(item + '.' + item) }}">
             {{ icon | safe }}
             {{ label }}
         </a>

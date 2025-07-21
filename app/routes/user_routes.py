@@ -98,9 +98,9 @@ def get_goto_items_by_id(id):
     item_count = Counter()
 
     for order in user.orders:
-        for order_item in order.order_items:  
-            if order_item.item:  
-                item_count[order_item.item.name] += 1
+        for orderitem in order.orderitems:  
+            if orderitem.item:  
+                item_count[orderitem.item.name] += 1
             
     top_items = item_count.most_common(5)
     

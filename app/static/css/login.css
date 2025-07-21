@@ -1,7 +1,7 @@
 * {
+    box-sizing: border-box;
     margin: 0;
     padding: 0;
-    box-sizing: border-box;
     font-family: -apple-system, BlinkMacSystemFont, "Segoe UI";
 }
 
@@ -30,15 +30,15 @@ body {
 
 .login-header h1 {
     font-size: 20px;
-    letter-spacing: 0.2px;
     font-weight: 550;
+    letter-spacing: 0.2px;
 }
 
 .message {
-    text-align: center;
     font-size: 12px;
-    color: red;
     font-weight: 400;
+    text-align: center;
+    color: red;
 }
 
 .login-form {
@@ -48,19 +48,19 @@ body {
 }
 
 .form-label {
-    margin-bottom: 4px;
     display: block;
     font-size: 14px;
     font-weight: 450;
+    margin-bottom: 4px;
 }
 
 .form-input {
     width: 100%;
     height: 40px;
-    padding: 5px 12px;
-    font-size: 12px;
     border: 1px solid rgb(209, 217, 224);
     border-radius: 6px;
+    font-size: 12px;
+    padding: 5px 12px;
 }
 
 .form-input:focus {
@@ -71,8 +71,8 @@ body {
 button {
     width: 100%;
     height: 40px;
-    background-color: #1f883d;
     color: white;
+    background-color: #1f883d;
     border: none;
     border-radius: 6px;
     font-size: 14px;

@@ -1,18 +1,23 @@
 from flask import Flask, redirect, url_for
-from models.user import db
-from models.order import Order
-from models.item import Item
-from models.store import Store
-from models.orderitem import OrderItem
+from database.database_orm import db
 import os
 
-from routes.auth_routes import auth_bp
-from routes.user_routes import user_bp
-from routes.user_routes import user_api_bp
-from routes.order_routes import order_bp
-from routes.orderitem_routes import orderitem_bp
-from routes.item_routes import item_bp
-from routes.store_routes import store_bp
+def register_blueprints(app):
+    from routes.auth_routes import auth_bp
+    from routes.user_routes import user_bp
+    from routes.user_routes import user_api_bp
+    from routes.order_routes import order_bp
+    from routes.orderitem_routes import orderitem_bp
+    from routes.item_routes import item_bp
+    from routes.store_routes import store_bp
+
+    app.register_blueprint(auth_bp, url_prefix='/auth')
+    app.register_blueprint(user_bp, url_prefix='/users')
+    app.register_blueprint(user_api_bp, url_prefix='/api/users')
+    app.register_blueprint(order_bp, url_prefix='/orders')
+    app.register_blueprint(orderitem_bp, url_prefix='/orderitems')
+    app.register_blueprint(item_bp, url_prefix='/items')
+    app.register_blueprint(store_bp, url_prefix='/stores')
 
 app = Flask(__name__)
 
@@ -25,13 +30,7 @@ db.init_app(app)
 with app.app_context():
     db.create_all()
 
-app.register_blueprint(auth_bp, url_prefix='/auth')
-app.register_blueprint(user_bp, url_prefix='/users')
-app.register_blueprint(user_api_bp, url_prefix='/api/users')
-app.register_blueprint(order_bp, url_prefix='/orders')
-app.register_blueprint(orderitem_bp, url_prefix='/orderitems')
-app.register_blueprint(item_bp, url_prefix='/items')
-app.register_blueprint(store_bp, url_prefix='/stores')
+register_blueprints(app)
 
 @app.route('/')
 def index():

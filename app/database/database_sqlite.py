@@ -3,7 +3,6 @@ import sqlite3 as sql
 DATABASE = 'mycrm.db'
 
 # order --------------------------------------------------------------------------------------
-
 def get_db():
     db = sql.connect(DATABASE)
     db.row_factory = sql.Row

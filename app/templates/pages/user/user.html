@@ -1,10 +1,10 @@
 {% extends 'layouts/base.html' %}
-{% from 'components/table.html' import load_component_styles %}
-{% from 'components/pagination.html' import load_styles %}
+{% from 'components/table.html' import load_table_styles %}
+{% from 'components/pagination.html' import load_pagination_styles %}
 
 {% block styles %}
-{{ load_component_styles() }}
-{{ load_styles() }}
+{{ load_table_styles() }}
+{{ load_pagination_styles() }}
 <link rel="stylesheet" href="{{ url_for('static', filename='css/search.css') }}">
 {% endblock %}
 

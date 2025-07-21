@@ -1,8 +1,8 @@
 {% extends 'layouts/base.html' %}
-{% from 'components/table.html' import load_component_styles %}
+{% from 'components/table.html' import load_table_styles %}
 
 {% block styles %}
-{{ load_component_styles() }}   
+{{ load_table_styles() }}   
 <link rel="stylesheet" href="{{ url_for('static', filename='css/user.css') }}">
 {% endblock %}
 

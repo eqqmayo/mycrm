@@ -1,4 +1,4 @@
-from models.user import db
+from database.database_orm import db
 
 class OrderItem(db.Model):
     __tablename__ = 'orderitems'
@@ -7,7 +7,7 @@ class OrderItem(db.Model):
     orderid = db.Column('OrderId', db.String, db.ForeignKey('orders.Id'))
     itemid = db.Column('ItemId', db.String, db.ForeignKey('items.Id'))
     
-    item = db.relationship('Item', backref='order_items', lazy=True)
+    item = db.relationship('Item', backref='orderitems', lazy=True)
 
     def __init__(self, id, orderid, itemid):
         self.id = id

@@ -1,12 +1,16 @@
 {% extends 'layouts/base.html' %}
-{% from 'components/table.html' import table, load_component_styles %}
+{% from 'components/table.html' import table, load_table_styles %}
 
 {% block styles %}
-{{ load_component_styles() }}
+{{ load_table_styles() }}
 {% endblock %}
 
 {% block content %}
 <main>
-    {{ table('Order Info', order, 3, 'store.store_detail', '', 4, 'user.user_detail') }}
+    {{ table(
+        title='Order Info', 
+        data=order, 
+        i=3, i_endpoint='store.store_detail', i_query='', 
+        j=4, j_endpoint='user.user_detail') }}
 </main>
 {% endblock %}
