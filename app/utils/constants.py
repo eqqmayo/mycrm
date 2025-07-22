@@ -1,0 +1,4 @@
+DATABASE = 'mycrm.db'
+
+ITEM_LIMIT = 12
+PAGE_LIMIT = 10

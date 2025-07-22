@@ -3,7 +3,6 @@ from models.user import User
 from collections import Counter
 from math import ceil
 
-
 user_bp = Blueprint('user', __name__)
 user_api_bp = Blueprint('user_api', __name__)
 
