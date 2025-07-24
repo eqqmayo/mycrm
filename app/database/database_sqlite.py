@@ -76,7 +76,7 @@ def get_orderitem_by_orderid(id):
 
 def get_items_per_page(page, limit):
     return execute_query(
-        'SELECT * FROM items LIMIT ? OFFSET ?',
+        'SELECT id, name, type, FORMAT("%,d", unitprice) AS UnitPrice FROM items LIMIT ? OFFSET ?',
         (limit, (page-1) * limit)
     )
 
@@ -85,7 +85,7 @@ def get_items_count():
 
 def get_item_by_id(id):
     return execute_query(
-        'SELECT name, unitprice FROM items WHERE id = ?',
+        'SELECT name, FORMAT("%,d", unitprice) AS UnitPrice FROM items WHERE id = ?',
         (id,),
         fetch_one=True
     )
@@ -93,7 +93,7 @@ def get_item_by_id(id):
 def get_month_rev_by_itemid(id):
     return execute_query(
         '''SELECT strftime('%Y-%m', o.orderat) AS Month, 
-                  SUM(i.unitprice) AS "Total Revenue", 
+                  FORMAT("%,d", SUM(i.unitprice)) AS "Total Revenue", 
                   COUNT(*) AS "Item Count"
            FROM stores s
            JOIN orders o ON s.id = o.storeid 
@@ -125,7 +125,7 @@ def get_store_by_id(id):
 def get_monthly_rev_by_storeid(id):
     return execute_query(
         '''SELECT strftime('%Y-%m', o.orderat) AS Month, 
-                  SUM(i.unitprice) AS Revenue, 
+                  printf('%,d', SUM(i.unitprice)) AS Revenue, 
                   COUNT(*) AS Count
            FROM stores s
            JOIN orders o ON s.id = o.storeid 
@@ -139,7 +139,7 @@ def get_monthly_rev_by_storeid(id):
 def get_daily_rev_by_storeid(id, month):
     return execute_query(
         '''SELECT strftime('%Y-%m-%d', o.orderat) AS Month, 
-                  SUM(i.unitprice) AS Revenue, 
+                  printf('%,d', SUM(i.unitprice)) AS Revenue, 
                   COUNT(*) AS Count
            FROM stores s
            JOIN orders o ON s.id = o.storeid 

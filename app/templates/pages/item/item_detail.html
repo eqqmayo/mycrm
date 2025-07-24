@@ -30,7 +30,7 @@
                 order: 1
             }, {
                 label: 'Total Revenue',
-                data: dataList.map(data => data['Total Revenue']),
+                data: dataList.map(data => Number(data['Total Revenue'].replace(',', ''))),
                 type: 'bar',
                 backgroundColor: 'rgb(253, 140, 115)',
                 yAxisID: 'y1',  
