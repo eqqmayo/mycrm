@@ -1,5 +1,5 @@
 from flask import Blueprint, render_template, request
-from database import database_sqlite as db
+import database.database_sqlite as db
 from utils.pagination import paginate
 
 store_bp = Blueprint('store', __name__)

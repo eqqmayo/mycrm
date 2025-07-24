@@ -1,7 +1,6 @@
 from flask import Blueprint, render_template
-from database import database_sqlite as db
+import database.database_sqlite as db
 from utils.pagination import paginate
-from utils.constants import ITEM_LIMIT
 
 item_bp = Blueprint('item', __name__)
 
