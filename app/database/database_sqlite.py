@@ -1,226 +1,175 @@
 import sqlite3 as sql
+from typing import Tuple, Dict, Any
+from utils.constants import DATABASE
 
-DATABASE = 'mycrm.db'
-
-# order --------------------------------------------------------------------------------------
 def get_db():
     db = sql.connect(DATABASE)
     db.row_factory = sql.Row
     return db
 
-def get_orders_per_page(page, limit):
+def execute_query(query: str, params: Tuple = (), fetch_one: bool = False) -> Dict[str, Any]:
     db = get_db()
     cursor = db.cursor()
-    cursor.execute('SELECT * FROM orders LIMIT ? OFFSET ?', (limit, (page-1) * limit))
+    cursor.execute(query, params)
+    
     keys = [description[0] for description in cursor.description]
-    items = cursor.fetchall()
+    items = cursor.fetchone() if fetch_one else cursor.fetchall()
+    
     db.close()
-    return {'keys': keys, 'items': [dict(item) for item in items]}
+    return {
+        'keys': keys,
+        'items': [dict(items)] if items and fetch_one 
+            else [dict(item) for item in items] if items 
+            else []
+    }
 
-def get_orders_count():
+def execute_count_query(query: str, params: Tuple = ()) -> int:
     db = get_db()
     cursor = db.cursor()
-    cursor.execute('SELECT COUNT(*) FROM orders')
+    cursor.execute(query, params)
     count = cursor.fetchone()[0]
     db.close()
     return count
 
-def get_order_by_id(id: str):
-    db = get_db()
-    cursor = db.cursor()
-    cursor.execute('SELECT * FROM orders WHERE id = ?', (id,))
-    keys = [description[0] for description in cursor.description]
-    item = cursor.fetchone()
-    db.close()
-    return {'keys': keys, 'items': [dict(item)]}
+# Order ============================================================================
 
-# order item --------------------------------------------------------------------------------------
-
-def get_orderitems_per_page(page, limit):
-    db = get_db()
-    cursor = db.cursor()
-    cursor.execute(
-        'SELECT o.*, i.name FROM orderitems o JOIN items i ON o.itemid = i.id LIMIT ? OFFSET ?', 
+def get_orders_per_page(page, limit):
+    return execute_query(
+        'SELECT * FROM orders LIMIT ? OFFSET ?',
         (limit, (page-1) * limit)
     )
-    keys = [description[0] for description in cursor.description]
-    items = cursor.fetchall()
-    db.close()
-    return {'keys': keys, 'items': [dict(item) for item in items]}
+
+def get_orders_count():
+    return execute_count_query('SELECT COUNT(*) FROM orders')
+
+def get_order_by_id(id):
+    return execute_query(
+        'SELECT * FROM orders WHERE id = ?',
+        (id,),
+        fetch_one=True
+    )
+
+# OrderItem ============================================================================
+
+def get_orderitems_per_page(page, limit):
+    return execute_query(
+        '''SELECT o.*, i.name 
+           FROM orderitems o 
+           JOIN items i ON o.itemid = i.id 
+           LIMIT ? OFFSET ?''',
+        (limit, (page-1) * limit)
+    )
 
 def get_orderitems_count():
-    db = get_db()
-    cursor = db.cursor()
-    cursor.execute('SELECT COUNT(*) FROM orderitems')
-    count = cursor.fetchone()[0]
-    db.close()
-    return count
+    return execute_count_query('SELECT COUNT(*) FROM orderitems')
 
-def get_orderitem_by_orderid(id: int):
-    db = get_db()
-    cursor = db.cursor()
-    cursor.execute(
-        'SELECT o.*, i.name FROM orderitems o JOIN items i ON o.itemid = i.id WHERE o.orderid = ?', (id,) 
+def get_orderitem_by_orderid(id):
+    return execute_query(
+        '''SELECT o.*, i.name 
+           FROM orderitems o 
+           JOIN items i ON o.itemid = i.id 
+           WHERE o.orderid = ?''',
+        (id,)
     )
-    keys = [description[0] for description in cursor.description]
-    items = cursor.fetchall()
-    db.close()
-    return {'keys': keys, 'items': [dict(item) for item in items]}
 
-# item --------------------------------------------------------------------------------------
+# Item ============================================================================
 
 def get_items_per_page(page, limit):
-    db = get_db()
-    cursor = db.cursor()
-    cursor.execute('SELECT * FROM items LIMIT ? OFFSET ?', (limit, (page-1) * limit))
-    keys = [description[0] for description in cursor.description]
-    items = cursor.fetchall()
-    db.close()
-    return {'keys': keys, 'items': [dict(item) for item in items]}
+    return execute_query(
+        'SELECT id, name, type, FORMAT("%,d", unitprice) AS UnitPrice FROM items LIMIT ? OFFSET ?',
+        (limit, (page-1) * limit)
+    )
 
 def get_items_count():
-    db = get_db()
-    cursor = db.cursor()
-    cursor.execute('SELECT COUNT(*) FROM items')
-    count = cursor.fetchone()[0]
-    db.close()
-    return count
+    return execute_count_query('SELECT COUNT(*) FROM items')
 
 def get_item_by_id(id):
-    db = get_db()
-    cursor = db.cursor()
-    cursor.execute('SELECT name, unitprice FROM items WHERE id = ?', (id,))
-    keys = [description[0] for description in cursor.description]
-    item = cursor.fetchone()
-    db.close()
-    return {'keys': keys, 'items': [dict(item)]}
+    return execute_query(
+        'SELECT name, FORMAT("%,d", unitprice) AS UnitPrice FROM items WHERE id = ?',
+        (id,),
+        fetch_one=True
+    )
 
-def get_month_rev_by_itemid(id: str):
-    db = get_db()
-    cursor = db.cursor()
-    cursor.execute('''
-        SELECT strftime('%Y-%m', o.orderat) AS Month, 
-               SUM(i.unitprice) AS "Total Revenue", 
-               COUNT(*) AS "Item Count"
-        FROM stores s
-        JOIN orders o ON s.id = o.storeid 
-        JOIN orderitems oi ON o.id = oi.orderid
-        JOIN items i ON oi.itemid = i.id
-        WHERE i.id = ?
-        GROUP BY Month
-        ''', 
+def get_month_rev_by_itemid(id):
+    return execute_query(
+        '''SELECT strftime('%Y-%m', o.orderat) AS Month, 
+                  FORMAT("%,d", SUM(i.unitprice)) AS "Total Revenue", 
+                  COUNT(*) AS "Item Count"
+           FROM stores s
+           JOIN orders o ON s.id = o.storeid 
+           JOIN orderitems oi ON o.id = oi.orderid
+           JOIN items i ON oi.itemid = i.id
+           WHERE i.id = ?
+           GROUP BY Month''',
         (id,)
     )
-    keys = [description[0] for description in cursor.description]
-    items = cursor.fetchall()
-    db.close()
-    return {'keys': keys, 'items': [dict(item) for item in items]}
 
-
-# store --------------------------------------------------------------------------------------
+# Store ============================================================================
 
 def get_stores_per_page(page, limit):
-    db = get_db()
-    cursor = db.cursor()
-    cursor.execute('SELECT * FROM stores LIMIT ? OFFSET ?', (limit, (page-1) * limit))
-    keys = [description[0] for description in cursor.description]
-    items = cursor.fetchall()
-    db.close()
-    return {'keys': keys, 'items': [dict(item) for item in items]}
+    return execute_query(
+        'SELECT * FROM stores LIMIT ? OFFSET ?',
+        (limit, (page-1) * limit)
+    )
 
 def get_stores_count():
-    db = get_db()
-    cursor = db.cursor()
-    cursor.execute('SELECT COUNT(*) FROM stores')
-    count = cursor.fetchone()[0]
-    db.close()
-    return count
+    return execute_count_query('SELECT COUNT(*) FROM stores')
 
-def get_store_by_id(id: str):
-    db = get_db()
-    cursor = db.cursor()
-    cursor.execute('SELECT name, type, address FROM stores WHERE id = ?', (id,))
-    keys = [description[0] for description in cursor.description]
-    item = cursor.fetchone()
-    db.close()
-    return {'keys': keys, 'items': [dict(item)]}
+def get_store_by_id(id):
+    return execute_query(
+        'SELECT name, type, address FROM stores WHERE id = ?',
+        (id,),
+        fetch_one=True
+    )
 
-def get_month_rev_by_storeid(id: str):
-    db = get_db()
-    cursor = db.cursor()
-    cursor.execute('''
-        SELECT strftime('%Y-%m', o.orderat) AS Month, 
-               SUM(i.unitprice) AS Revenue, 
-               COUNT(*) AS Count
-        FROM stores s
-        JOIN orders o ON s.id = o.storeid 
-        JOIN orderitems oi ON o.id = oi.orderid
-        JOIN items i ON oi.itemid = i.id
-        WHERE s.id = ?
-        GROUP BY Month
-        ''', 
+def get_monthly_rev_by_storeid(id):
+    return execute_query(
+        '''SELECT strftime('%Y-%m', o.orderat) AS Month, 
+                  printf('%,d', SUM(i.unitprice)) AS Revenue, 
+                  COUNT(*) AS Count
+           FROM stores s
+           JOIN orders o ON s.id = o.storeid 
+           JOIN orderitems oi ON o.id = oi.orderid
+           JOIN items i ON oi.itemid = i.id
+           WHERE s.id = ?
+           GROUP BY Month''',
         (id,)
     )
-    keys = [description[0] for description in cursor.description]
-    items = cursor.fetchall()
-    db.close()
-    return {'keys': keys, 'items': [dict(item) for item in items]}
 
-def get_day_rev_by_storeid(id: str, month: str):
-    db = get_db()
-    cursor = db.cursor()
-    cursor.execute('''
-        SELECT strftime('%Y-%m-%d', o.orderat) AS Month, 
-               SUM(i.unitprice) AS Revenue, 
-               COUNT(*) AS Count
-        FROM stores s
-        JOIN orders o ON s.id = o.storeid 
-        JOIN orderitems oi ON o.id = oi.orderid
-        JOIN items i ON oi.itemid = i.id
-        WHERE s.id = ? AND strftime('%Y-%m', o.orderat) = ?
-        GROUP BY Month
-        ''', 
+def get_daily_rev_by_storeid(id, month):
+    return execute_query(
+        '''SELECT strftime('%Y-%m-%d', o.orderat) AS Month, 
+                  printf('%,d', SUM(i.unitprice)) AS Revenue, 
+                  COUNT(*) AS Count
+           FROM stores s
+           JOIN orders o ON s.id = o.storeid 
+           JOIN orderitems oi ON o.id = oi.orderid
+           JOIN items i ON oi.itemid = i.id
+           WHERE s.id = ? AND strftime('%Y-%m', o.orderat) = ?
+           GROUP BY Month''',
         (id, month)
     )
-    keys = [description[0] for description in cursor.description]
-    items = cursor.fetchall()
-    db.close()
-    return {'keys': keys, 'items': [dict(item) for item in items]}
 
-def get_regular_by_id(id):
-    db = get_db()
-    cursor = db.cursor()
-    cursor.execute('''
-        SELECT u.id, u.name, COUNT(*) AS Frequency
-        FROM users u 
-        JOIN orders o ON u.id = o.userid
-        WHERE o.storeid = ?
-        GROUP BY u.id
-        ORDER BY frequency DESC
-        LIMIT 10
-        ''', 
+def get_regulars_by_id(id):
+    return execute_query(
+        '''SELECT u.id, u.name, COUNT(*) AS Frequency
+           FROM users u 
+           JOIN orders o ON u.id = o.userid
+           WHERE o.storeid = ?
+           GROUP BY u.id
+           ORDER BY frequency DESC
+           LIMIT 10''',
         (id,)
     )
-    keys = [description[0] for description in cursor.description]
-    items = cursor.fetchall()
-    db.close()
-    return {'keys': keys, 'items': [dict(item) for item in items]}
 
-def get_month_regular_by_id(id, month):
-    db = get_db()
-    cursor = db.cursor()
-    cursor.execute('''
-        SELECT u.id, u.name, COUNT(*) AS Frequency
-        FROM users u 
-        JOIN orders o ON u.id = o.userid
-        WHERE o.storeid = ? AND strftime('%Y-%m', o.orderat) = ?
-        GROUP BY u.id
-        ORDER BY frequency DESC
-        LIMIT 10
-        ''', 
+def get_monthly_regulars_by_id(id, month):
+    return execute_query(
+        '''SELECT u.id, u.name, COUNT(*) AS Frequency
+           FROM users u 
+           JOIN orders o ON u.id = o.userid
+           WHERE o.storeid = ? AND strftime('%Y-%m', o.orderat) = ?
+           GROUP BY u.id
+           ORDER BY frequency DESC
+           LIMIT 10''',
         (id, month)
-    )
-    keys = [description[0] for description in cursor.description]
-    items = cursor.fetchall()
-    db.close()
-    return {'keys': keys, 'items': [dict(item) for item in items]}
+    )   
