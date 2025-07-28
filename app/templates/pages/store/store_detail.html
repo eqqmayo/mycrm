@@ -15,7 +15,7 @@
         {{ table(
             title='Regular Customer', 
             data=month_regular, 
-            i=1, i_endpoint='user.user_detail') }}
+            i=1, i_endpoint='user.user') }}
     {% else %}
         {{ table(
             title='Monthly Revenue', 
@@ -24,7 +24,7 @@
         {{ table(
             title='Regular Customer', 
             data=regular, 
-            i=1, i_endpoint='user.user_detail') }}
+            i=1, i_endpoint='user.user') }}
     {% endif %}
 </main>
 {% endblock %}

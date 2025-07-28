@@ -1,5 +1,5 @@
 from flask import Blueprint, jsonify, request
-from utils.constants import ITEM_LIMIT
+from utils.constants import ITEM_LIMIT, PAGE_LIMIT
 from models.user import User
 from collections import Counter
 from math import ceil
@@ -9,8 +9,10 @@ user_api_bp = Blueprint('user_api', __name__)
 @user_api_bp.route('/')
 @user_api_bp.route('/<int:page>')
 def get_users(page=1):
-    limit = ITEM_LIMIT
-    offset = (page - 1) * limit
+    item_limit = ITEM_LIMIT
+    page_limit = PAGE_LIMIT
+    
+    offset = (page - 1) * item_limit
 
     name = request.args.get('name')
     gender = request.args.get('gender')
@@ -22,12 +24,12 @@ def get_users(page=1):
     if gender: 
         query = query.filter(User.gender == gender)
 
-    users = query.offset(offset).limit(limit).all()
+    users = query.offset(offset).limit(item_limit).all()
     total_count = query.count() 
-    last_page = ceil(total_count / limit)
+    last_page = ceil(total_count / item_limit)
 
-    start = (ceil(page / 10) - 1) * 10 + 1
-    end = min(ceil(page / 10) * 10, last_page)
+    start = (ceil(page / page_limit) - 1) * page_limit + 1
+    end = min(ceil(page / page_limit) * page_limit, last_page)
 
     return jsonify({
         'users':[{

@@ -1,41 +1,28 @@
 class Pagination {
-    constructor(start, end, current_page, last_page, baseUrl = '/users', onPageChange = null) {
+    constructor(start, end, currentPage, lastPage) {
         this.start = start;
         this.end = end;
-        this.current_page = current_page;
-        this.last_page = last_page;
-        this.baseUrl = baseUrl;
-        this.onPageChange = onPageChange;
+        this.currentPage = currentPage;
+        this.lastPage = lastPage;
     }
-
+    
     render() {
         let pagination = '<ul class="pagination">';
         
-        if (this.current_page != 1) {
-            pagination += `<li><a href="#" onclick="changePage(${this.current_page - 1}); return false;">&lt; Prev</a></li>`;
+        if (this.currentPage != 1) {
+            pagination += `<li><a href="#" onclick="changePage(${this.currentPage - 1}, event)">&lt; Prev</a></li>`;
         }
         
         for (let page = this.start; page <= this.end; page++) {
-            const activeClass = page === this.current_page ? 'inactive' : '';
-            pagination += `<li><a href="#" onclick="changePage(${page}); return false;" class="${activeClass}">${page}</a></li>`;
+            const activeClass = page === this.currentPage ? 'inactive' : '';
+            pagination += `<li><a href="#" onclick="changePage(${page}, event)" class="${activeClass}">${page}</a></li>`;
         }
         
-        if (this.current_page != this.last_page) {
-            pagination += `<li><a href="#" onclick="changePage(${this.current_page + 1}); return false;">Next &gt;</a></li>`;
+        if (this.currentPage != this.lastPage) {
+            pagination += `<li><a href="#" onclick="changePage(${this.currentPage + 1}, event)">Next &gt;</a></li>`;
         }
         
         pagination += '</ul>';
         return pagination;
     }
-
-}
-
-function changePage(page) {
-    // 현재 URL의 쿼리 파라미터 가져오기
-    const currentParams = window.location.search;
-    
-    // 페이지 번호는 경로에, 기존 쿼리 파라미터는 유지
-    history.pushState({}, '', `/users/${page}${currentParams}`);
-    window.scrollTo(0,0);
-    fetchUsers();
 }

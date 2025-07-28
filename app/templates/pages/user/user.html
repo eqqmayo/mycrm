@@ -9,55 +9,43 @@
 {% endblock %}
 
 {% block content %}
-    <main>
-        <div class="search-container"></div>
-        <div class="users-table-container"></div>
-        <div class="pagination-container"></div>
-    </main>
+    <div id="user-page">
+        <main>
+            <div class="search-container"></div>
+            <p>&nbsp;User</p>
+            <div class="user-table-container"></div>
+            <div class="pagination-container"></div>
+        </main>
+    </div>
+    
+    <div id="user-detail-page" style="display: none;">
+        <main>
+            <div id="user-detail-container">
+                <p>&nbsp;User Info</p>
+                <div class="user-info-content"></div>
+                
+                <p>&nbsp;Order Info</p>
+                <div class="user-orders-content"></div>
+                
+                <p>&nbsp;자주 방문한 매장 Top 5</p>
+                <div class="user-stores-content"></div>
+                
+                <p>&nbsp;자주 주문한 메뉴 Top 5</p>
+                <div class="user-items-content"></div>
+            </div>
+        </main>
+    </div>
     
     <script src="/static/js/components/table.js"></script>
     <script src="/static/js/components/pagination.js"></script>
     <script src="/static/js/components/search.js"></script>
+    
+    <script src="/static/js/router.js"></script>
+    <script src="/static/js/pages/user.js"></script>
+    <script src="/static/js/pages/userDetail.js"></script>
     <script>
-        document.querySelector('.search-container').innerHTML = renderSearch();
-
-        async function fetchUsers() {
-            let url = '/api/users';
-            
-            if (window.location.search) {
-                url += window.location.pathname.split('/users')[1] 
-                        + window.location.search; 
-            }   
-            else if (window.location.pathname.split('/')[2]) {
-                url += '/' + window.location.pathname.split('/')[2];
-            }
-
-            const response = await fetch(url);
-            const data = await response.json();
-            
-            const userData = {
-                keys: ['Id', 'Name', 'Gender', 'Age', 'Birthdate'],
-                items: data['users']
-            };
-
-            const table = new Table('User', userData, {
-                linkColumn: ['Id'],
-                baseUrl: ['/users/detail']
-            });
-
-            document.querySelector('.users-table-container').innerHTML = table.render();
-
-            const pageData = data['pagination'];
-            const pagination = new Pagination(
-                pageData['start'], 
-                pageData['end'], 
-                pageData['current_page'], 
-                pageData['last_page']
-            );
-
-            document.querySelector('.pagination-container').innerHTML = pagination.render();
-        }
-
-        fetchUsers();
+        document.addEventListener('DOMContentLoaded', () => {
+            renderCurrentPage();
+        });
     </script>
 {% endblock %}

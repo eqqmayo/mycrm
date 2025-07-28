@@ -1,13 +1,14 @@
 class Table {
-    constructor(title, data, options = {linkColumn: []}) {
-        this.title = title;
+    constructor(
+        data = {keys: [], items: []}, 
+        options = {linkColumn: [], baseUrl: []}
+    ) {
         this.data = data;
         this.options = options;
     }
 
     render() {
         return `
-            <p>&nbsp;${this.title}</p>
             <table>
                 <tr>
                     ${this.data.keys.map(key => 
@@ -20,8 +21,14 @@ class Table {
                             if (this.options.linkColumn && this.options.linkColumn.includes(key)) {
                                 const index = this.options.linkColumn.indexOf(key);
                                 const url = this.options.baseUrl[index];
-                                return `<td><a href="${url}/${item[key]}">
-                                        ${item[key]}</a></td>`;
+                                
+                                if (url.includes('/users')) {
+                                    return `<td><a href="#" onclick="navigateTo('${url}/${item[key]}'); return false;">
+                                            ${item[key]}</a></td>`;
+                                } else {
+                                    return `<td><a href="${url}/${item[key]}">
+                                            ${item[key]}</a></td>`;
+                                }
                             }
                             return `<td>${item[key]}</td>`;
                         }).join('')}

@@ -1,17 +1,22 @@
-from flask import Blueprint, render_template
+from flask import Blueprint, Response, render_template
 import database.database_sqlite as db
 from utils.pagination import paginate
 
 item_bp = Blueprint('item', __name__)
 
 @item_bp.route('/')
-@item_bp.route('/<int:page>')
+@item_bp.route('/<page>')
 def item(page=1):
     result = paginate(
         page=page,
+        endpoint='item.item',
         get_count_func=db.get_items_count,
         get_items_func=db.get_items_per_page,
     )
+
+    if isinstance(result, Response):
+        return result
+
     return render_template('pages/item/item.html',
                          items=result['items'],
                          **result['pagination'],
