@@ -1,4 +1,5 @@
 from flask import Blueprint, jsonify, request
+from utils.constants import ITEM_LIMIT
 from models.user import User
 from collections import Counter
 from math import ceil
@@ -8,13 +9,13 @@ user_api_bp = Blueprint('user_api', __name__)
 @user_api_bp.route('/')
 @user_api_bp.route('/<int:page>')
 def get_users(page=1):
-    limit = 12
+    limit = ITEM_LIMIT
     offset = (page - 1) * limit
-
-    query = User.query
 
     name = request.args.get('name')
     gender = request.args.get('gender')
+
+    query = User.query
 
     if name:
         query = query.filter(User.name.like(f'%{name}%')) 
@@ -46,7 +47,7 @@ def get_users(page=1):
 
 @user_api_bp.route('/user/<string:id>')
 def get_user_by_id(id):
-    user = User.query.filter_by(id=id).one()
+    user = User.query.filter(User.id == id).one()
     return jsonify([{
         'Name': user.name,
         'Gender': user.gender,
@@ -57,7 +58,7 @@ def get_user_by_id(id):
 
 @user_api_bp.route('/orders/<string:id>')
 def get_orders_by_id(id):
-    user = User.query.filter_by(id=id).one()
+    user = User.query.filter(User.id == id).one()
     return jsonify([{
         'OrderId': order.id,
         'OrderAt': order.orderat,
@@ -66,7 +67,7 @@ def get_orders_by_id(id):
 
 @user_api_bp.route('/goto-stores/<string:id>')
 def get_goto_stores_by_id(id):
-    user = User.query.filter_by(id=id).one()
+    user = User.query.filter(User.id == id).one()
     store_count = Counter()
 
     for order in user.orders:
@@ -82,7 +83,7 @@ def get_goto_stores_by_id(id):
 
 @user_api_bp.route('/goto-items/<string:id>')
 def get_goto_items_by_id(id):
-    user = User.query.filter_by(id=id).one()
+    user = User.query.filter(User.id == id).one()
     item_count = Counter()
 
     for order in user.orders:

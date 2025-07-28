@@ -19,7 +19,6 @@ def paginate(
         'end': min(ceil(page / PAGE_LIMIT) * PAGE_LIMIT, last_page),
         'current_page': page,
         'last_page': last_page,
-        'limit': limit
     }
 
     return {
