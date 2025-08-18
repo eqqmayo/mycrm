@@ -44,6 +44,10 @@
     <script src="/static/js/pages/user.js"></script>
     <script src="/static/js/pages/userDetail.js"></script>
     <script>
+        window.AppData = {
+            route: {{ route|tojson }}
+        };
+
         document.addEventListener('DOMContentLoaded', () => {
             renderCurrentPage();
         });

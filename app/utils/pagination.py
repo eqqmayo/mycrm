@@ -1,6 +1,5 @@
 from math import ceil
 from typing import Dict, Any, Callable
-
 from flask import redirect, url_for
 from utils.constants import ITEM_LIMIT, PAGE_LIMIT
 

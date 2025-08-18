@@ -1,15 +1,6 @@
 function getCurrentPage() {
-    const path = window.location.pathname;
-    
-    if (path.includes('/users/detail/')) {
-        const userId = path.split('/users/detail/')[1];
-        return {
-            type: 'userDetail',
-            userId: userId
-        };
-    }
-
-    return { type: 'user' };
+    const route = window.AppData.route;
+    return { type: route.type, param: route.param };
 }
 
 function navigateTo(url) {
@@ -24,7 +15,7 @@ async function renderCurrentPage() {
     if (currentPage.type === 'user') {
         await displayUser();
     } else {
-        await displayUserDetail(currentPage.userId);
+        await displayUserDetail(currentPage.param);
     }
 }
 

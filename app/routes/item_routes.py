@@ -18,9 +18,9 @@ def item(page=1):
         return result
 
     return render_template('pages/item/item.html',
-                         items=result['items'],
-                         **result['pagination'],
-                         )
+                            items=result['items'],
+                            **result['pagination'],
+                            )
 
 @item_bp.route('/detail/<string:id>')
 def item_detail(id):

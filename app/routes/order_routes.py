@@ -18,9 +18,9 @@ def order(page=1):
         return result
 
     return render_template('pages/order/order.html',
-                         orders=result['items'],
-                         **result['pagination'],
-                         )
+                            orders=result['items'],
+                            **result['pagination'],
+                            )
 
 @order_bp.route('/detail/<string:id>')
 def order_detail(id):
